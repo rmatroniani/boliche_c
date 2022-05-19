@@ -1,0 +1,175 @@
+#include <stdio.h>
+
+void main (void)
+{
+int n, /* n partidas do jogo de boliche */
+    partida, /* contador para o numero de partidas */
+    jogada,  /* contador para jogadas (ate' 10) */
+    bola1,   /* recebe pontuacao da bola 1 */
+    bola2,   /* recebe pontuacao da bola 2, caso nao haja strike */
+    indicastrike, /* indica se houve strike */
+    verificaspare, /* verifica se houve spare (soma == 10) */
+    indicaspare, /* indica se houve spare */
+    bolaextra1, /* recebe valor da bola extra 1 em caso de strike na
+		   decima jogada, ou spare na decima jogada */
+    bolaextra2, /* recebe valor da bola extra 2 em caso de strike na
+		   decima jogada */
+    pontuacao, /* pontuacao de cada bola */
+    pontuacaodapartida, /* soma da pontuacao de cada partida */
+    pontuacaototal; /* soma da pontuacao de n partidas */
+
+/* inicializacoes das variaveis */
+indicastrike = 0;
+indicaspare = 0;
+pontuacao = 0;
+pontuacaodapartida = 0;
+pontuacaototal = 0;
+verificaspare = 0;
+jogada = 1;
+partida = 1;
+
+printf (" PONTUCAO DO JOGO DE BOLICHE \n\n");
+
+printf ("Entre com o numero de partidas: ");
+scanf ("%d", &n);
+if (n != 0)
+  printf ("O numero de partidas e' %d, cada uma com 10 jogadas.\n", n);
+
+  for (partida = 1; partida <= n; partida ++)
+    {
+    for (jogada = 1; jogada <= 10; jogada ++)
+      {
+      printf ("\nPartida numero %d.\nJogada numero %d.\n", partida, jogada);
+
+      /* Bola 1 */
+      printf ("Entre com o valor da bola 1: ");
+      scanf ("%d", &bola1);
+      printf ("A pontuacao da bola 1 e' %d\n", bola1);
+
+      while (bola1 > 10) /* Mais que 10 pinos */
+	{
+	printf ("Erro !!! Entre novamente com o valor da bola 1: ");
+	scanf ("%d", &bola1);
+	printf ("A pontuacao da bola 1 e': %d\n", bola1);
+	}
+
+      if (bola1 == 10) /* Ocorreu strike */
+	{
+	printf ("STRIKE !!!\n");
+	pontuacao = pontuacao + bola1;
+
+	if (indicastrike == 0)
+	  indicastrike = 1; /*indica que houve strike */
+
+	else
+	  {
+	  if (indicastrike == 1) /* se ja ocorreu strike anteriormente */
+	    {
+	    pontuacao = pontuacao + bola1;
+	    indicastrike = 2; /* Strikes seguidos */
+	    pontuacao = pontuacao - 10;
+	    }
+	  if (indicastrike == 2) /* Strikes seguidos, 2 vezes 10 */
+	    pontuacao = pontuacao + bola1 + 10;
+
+	  else
+	    {
+	    if (indicaspare == 1)  /* se Spare, soma sempre a proxima bola */
+	    pontuacao = pontuacao + bola1;
+	    }
+	  }
+
+	if (jogada == 10)
+	  {
+	  /* Como ocorreu strike na ultima jogada, tem direito a
+	   mais duas bolas */
+	  printf ("O jogador tem direito a mais duas bolas extras.\n");
+	  printf ("Entre com o valor da primeira bola extra: ");
+	  scanf ("%d", &bolaextra1);
+	  printf ("Valor da primeira bola extra = %d\n", bolaextra1);
+	  printf ("Entre com o valor da segunda bola extra: ");
+	  scanf ("%d", &bolaextra2);
+	  printf ("Valor da segunda bola extra = %d\n", bolaextra2);
+	  pontuacao = pontuacao + (bolaextra1 + bolaextra2);
+	  }
+	}
+
+      if (bola1 < 10)  /* nao ocorreu strike */
+	{
+
+	/* Bola 2 */
+	printf ("Entre com o valor da bola 2: ");
+	scanf ("%d", &bola2);
+	printf ("A pontucao da bola 2 e' %d\n", bola2);
+
+	verificaspare = bola1 + bola2;
+	while (verificaspare > 10) /* Situacao impossivel */
+	  {
+	  printf ("Erro!!! Entre novamente com o valor da bola 2: ");
+	  scanf ("%d", &bola2);
+	  printf ("Pontuacao da bola 2 e' %d\n", bola2);
+	  verificaspare = bola1 + bola2;
+	  }
+
+	if (verificaspare == 10) /* Ocorreu spare */
+	  {
+	  printf ("SPARE !\n");
+	  pontuacao = pontuacao + bola1 + bola2;
+
+	  if (indicastrike == 1) /* se ocorreu strike soma +2 prox. bolas */
+	    {
+	    pontuacao = pontuacao + bola1 + bola2;
+	    indicastrike = 0;
+	    }
+	  if (indicastrike == 2)
+	    pontuacao = pontuacao + bola1;
+	    /* se ocorreu 2 strikes, apenas a 1a. bola do spare e somada */
+	  else
+	    {
+	    if (indicaspare == 0) /* indica que houve spare */
+	      indicaspare = 1;
+	    else
+	      {           /* spare, soma so' bola 1*/
+	      if (indicaspare == 1)
+		pontuacao = pontuacao + bola1;
+	      }
+	    }
+	  if (jogada == 10)
+	    {
+	    /* O jogador tem direito a mais uma bola extra */
+	    printf ("O jogador tem direito a mais uma bola extra.\n");
+	    printf ("Entre com o valor da bola extra: ");
+	    scanf ("%d", &bolaextra1);
+	    printf ("Valor da bola extra = %d\n", bolaextra1);
+	    pontuacao = pontuacao + bolaextra1;
+	    }
+
+	  }
+
+	if (verificaspare < 10) /* Jogada normal */
+	  {
+	  pontuacao = pontuacao + bola1 + bola2;
+
+	  if (indicastrike == 1) /* soma 2 proximas bolas */
+	    pontuacao = pontuacao + bola1 + bola2;
+	  if (indicastrike == 2) /* -10 que foi somado 2 vezes */
+	    pontuacao = pontuacao + bola1 + bola2 - 10;
+	  if (indicaspare == 1) /* soma proxima bola */
+	    pontuacao = pontuacao + bola1;
+	  indicastrike = indicaspare = 0;
+	  }
+	}
+	      /* soma pontuacao da partida */
+    pontuacaodapartida = pontuacaodapartida + pontuacao;
+    pontuacao = 0;
+    verificaspare = 0;
+    }  /* Fim do 2o. for */
+
+  /* soma a pontuacao de todas as jogadas */
+  printf ("\nPontuacao da Partida: %d\n", pontuacaodapartida);
+  pontuacaototal = pontuacaototal + pontuacaodapartida;
+  pontuacaodapartida = 0;
+  indicastrike = indicaspare = 0;
+  }  /* Fim do 1o. for */
+printf ("\nPontuacao Total: %d\n", pontuacaototal);
+}/* Fim do programa */
